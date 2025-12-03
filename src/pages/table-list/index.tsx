@@ -256,7 +256,6 @@ const TableList: React.FC = () => {
           </div>
         }
         type="info"
-        closable
       />
       <ProTable<API.RuleListItem, API.PageParams>
         headerTitle={intl.formatMessage({
