@@ -62,4 +62,5 @@ export default {
   'menu.fund-records': 'Fund Records',
   'menu.invoice-title': 'Invoice Title',
   'menu.store-authorization': 'Store Authorization',
+  'menu.fba-management': 'FBA Direct Dispatch',
 };

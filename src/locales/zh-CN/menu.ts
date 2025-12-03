@@ -62,4 +62,5 @@ export default {
   'menu.fund-records': '钱款记录',
   'menu.invoice-title': '发票抬头管理',
   'menu.store-authorization': '店铺授权',
+  'menu.fba-management': 'FBA直派管理',
 };

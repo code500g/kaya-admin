@@ -79,6 +79,12 @@ export default [
     component: "./table-list",
   },
   {
+    path: "/fba-management",
+    name: "fba-management",
+    icon: "rocket",
+    component: "./fba-management",
+  },
+  {
     path: "/ocean-bill",
     name: "ocean-bill",
     icon: "profile",
