@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="135px" height="136px" viewBox="0 0 135 136" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组" transform="translate(0, -12)">
+            <g transform="translate(0, 12)">
+                <g transform="translate(50, 85.832)" fill="#1A3CB9">
+                    <path d="M18,1.16798401 L42,1.16798401 C55.8071187,1.16798401 67,12.3608653 67,26.167984 L67,26.167984 L67,26.167984 L18,26.167984 L18,1.16798401 Z" id="矩形"></path>
+                    <path d="M18,25.167984 L42,25.167984 C55.8071187,25.167984 67,36.3608653 67,50.167984 L67,50.167984 L67,50.167984 L18,50.167984 L18,25.167984 Z" id="矩形" transform="translate(42.5, 37.668) scale(-1, -1) translate(-42.5, -37.668)"></path>
+                    <polygon id="三角形" points="63.2471619 13 85 50.167984 53 50.167984"></polygon>
+                    <polygon id="三角形" transform="translate(16, 19.584) scale(-1, -1) translate(-16, -19.584)" points="10.2471619 1 32 38.167984 0 38.167984"></polygon>
+                </g>
+                <g transform="translate(0, -1)" fill="#155DFB">
+                    <polygon id="三角形" points="41.2438717 21.0047953 41 85 0 85"></polygon>
+                    <polygon id="三角形" transform="translate(96, 33.0444) rotate(180) translate(-96, -33.0444)" points="116.28822 1.00061433 117 64.9743401 75 65.0888636"></polygon>
+                    <path d="M82,1 L82,43 C82,66.1959595 63.1959595,85 40,85 L35,85 L35,43 C35,19.8040405 53.8040405,1 77,1 L82,1 Z" id="形状结合"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

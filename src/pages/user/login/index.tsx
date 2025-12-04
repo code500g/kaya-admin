@@ -212,8 +212,7 @@ const Login: React.FC = () => {
               minWidth: 280,
               maxWidth: "100%",
             }}
-            logo={<img alt="logo" src="/logo.svg" />}
-            title="开亚KAYA"
+            logo={<img alt="logo1" src="/logo.svg" />}
             subTitle={intl.formatMessage({
               id: "pages.layouts.userLayout.title",
             })}

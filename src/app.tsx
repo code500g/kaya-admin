@@ -1,25 +1,15 @@
-import { BellOutlined, LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
-import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
-import React from 'react';
-import { Badge } from 'antd';
-import {
-  AvatarDropdown,
-  AvatarName,
-  Footer,
-  Question,
-  SelectLang,
-} from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
-import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-import '@ant-design/v5-patch-for-react-19';
+import { AvatarDropdown, AvatarName, Footer } from "@/components";
+import { currentUser as queryCurrentUser } from "@/services/ant-design-pro/api";
+import type { Settings as LayoutSettings } from "@ant-design/pro-components";
+import { SettingDrawer } from "@ant-design/pro-components";
+import "@ant-design/v5-patch-for-react-19";
+import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
+import { history } from "@umijs/max";
+import defaultSettings from "../config/defaultSettings";
+import { errorConfig } from "./requestErrorConfig";
 
-const isDev =
-  process.env.NODE_ENV === 'development' || process.env.CI;
-const loginPath = '/user/login';
+const isDev = process.env.NODE_ENV === "development" || process.env.CI;
+const loginPath = "/user/login";
 
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
@@ -44,8 +34,8 @@ export async function getInitialState(): Promise<{
   // 如果不是登录页面，执行
   const { location } = history;
   if (
-    ![loginPath, '/user/register', '/user/register-result'].includes(
-      location.pathname,
+    ![loginPath, "/user/register", "/user/register-result"].includes(
+      location.pathname
     )
   ) {
     const currentUser = await fetchUserInfo();
@@ -67,23 +57,18 @@ export const layout: RunTimeLayoutConfig = ({
   setInitialState,
 }) => {
   return {
-    actionsRender: () => [
-      <div key="account-info" className="header-account-info">
-        <span>我的帐户ID: admin</span>
-        <span>我的邀请码: 1</span>
-        <span>我的公司编码: YWS23100802</span>
-      </div>,
-      <Badge
-        key="msg"
-        count={5}
-        offset={[-5, 6]}
-        className="header-badge"
-      >
-        <BellOutlined style={{ color: '#000', fontSize: 20 }} />
-      </Badge>,
-      <Question key="doc" />,
-      <SelectLang key="SelectLang" />,
-    ],
+    // actionsRender: () => [
+    //   <div key="account-info" className="header-account-info">
+    //     <span>我的帐户ID: admin</span>
+    //     <span>我的邀请码: 1</span>
+    //     <span>我的公司编码: YWS23100802</span>
+    //   </div>,
+    //   <Badge key="msg" count={5} offset={[-5, 6]} className="header-badge">
+    //     <BellOutlined style={{ color: "#000", fontSize: 20 }} />
+    //   </Badge>,
+    //   <Question key="doc" />,
+    //   <SelectLang key="SelectLang" />,
+    // ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -104,33 +89,31 @@ export const layout: RunTimeLayoutConfig = ({
     },
     bgLayoutImgList: [
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr",
         left: 85,
         bottom: 100,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr",
         bottom: -68,
         right: -45,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr",
         bottom: 0,
         left: 0,
-        width: '331px',
+        width: "331px",
       },
     ],
-    links: isDev
-      ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
-      : [],
-    menuHeaderRender: undefined,
+    // 自定义 logo 区域：可手动控制图片大小和样式
+    // menuHeaderRender: () => (
+    //   <div id="logo" className="custom-logo">
+    //     <img src={defaultSettings.logo || "/logo.svg"} alt="logo" />
+    //     <div className="custom-title">开亚下单操作平台</div>
+    //   </div>
+    // ),
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
@@ -165,6 +148,6 @@ export const layout: RunTimeLayoutConfig = ({
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: 'https://proapi.azurewebsites.net',
+  baseURL: "https://proapi.azurewebsites.net",
   ...errorConfig,
 };

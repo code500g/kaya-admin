@@ -60,7 +60,8 @@ body,
 .ant-pro-sider.ant-layout-sider.ant-pro-sider-fixed {
   left: unset;
 }
-.ant-pro-layout .ant-layout-header.ant-pro-layout-header,.ant-pro-global-header {
+.ant-pro-layout .ant-layout-header.ant-pro-layout-header,
+.ant-pro-global-header {
   height: 64px;
   line-height: 64px;
 }
@@ -81,36 +82,36 @@ body,
   color: #000 !important;
 }
 .ant-pro-layout .ant-pro-sider.ant-pro-sider-fixed-mix {
-    height: calc(100% - 70px);
-    inset-block-start: 70px;
+  height: calc(100% - 64px);
+  inset-block-start: 64px;
+  // background:rgb(35, 48, 68)
 }
 .header-account-info {
   display: flex;
   gap: 36px;
   align-items: center;
-  color: rgba(0, 0, 0, 0.88);
-  background: transparent !important;
   padding: 0;
+  font-size: 14px;
+
+  background: transparent !important;
   cursor: default;
-  font-size:14px;
   span {
     white-space: nowrap;
-    color: rgba(0, 0, 0, 0.88) !important;
   }
 }
 
 .header-badge {
   .ant-badge-count {
-    font-size: 10px;
     min-width: 14px;
     height: 14px;
-    line-height: 14px;
     padding: 0 3px;
+    font-size: 10px;
+    line-height: 14px;
   }
 }
 
-.ant-pro-global-header-header-actions{
-  gap:24px;
+.ant-pro-global-header-header-actions {
+  gap: 24px;
 }
 
 canvas {
@@ -126,6 +127,31 @@ body {
 ul,
 ol {
   list-style: none;
+}
+
+.custom-logo {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  img {
+    width: auto;
+    height: 36px;
+  }
+  .custom-title {
+    color: #fff;
+    font-weight: 500;
+    font-size: 22px;
+  }
+}
+.ant-pro-layout .ant-pro-sider-logo >a >img {
+    display: inline-block;
+    height: 30px;
+    vertical-align: middle;
+}
+.ant-pro-layout .ant-pro-sider-logo > a > h1 {
+  color: #ebf5ff;
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {
