@@ -197,8 +197,23 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      
+    <PageContainer
+      header={{
+        title: '仓储发货订单',
+        breadcrumb: {
+          routes: [
+            {
+              path: '/',
+              breadcrumbName: '首页',
+            },
+            {
+              path: '/warehouse-orders',
+              breadcrumbName: '仓储发货订单',
+            },
+          ],
+        },
+      }}
+    >
       <ProTable<TableListItem, TableListPagination>
         headerTitle="仓储发货订单"
         actionRef={actionRef}

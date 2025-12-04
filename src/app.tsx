@@ -107,6 +107,11 @@ export const layout: RunTimeLayoutConfig = ({
         width: "331px",
       },
     ],
+    // 统一面包屑：前置首页，其余沿用路由生成的层级
+    breadcrumbRender: (routers = []) => [
+      { path: "/", breadcrumbName: "首页" },
+      ...routers.filter((r) => r.path !== "/"),
+    ],
     // 自定义 logo 区域：可手动控制图片大小和样式
     // menuHeaderRender: () => (
     //   <div id="logo" className="custom-logo">

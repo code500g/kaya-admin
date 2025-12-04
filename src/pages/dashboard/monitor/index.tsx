@@ -1,5 +1,5 @@
 import { Gauge, Liquid, WordCloud } from '@ant-design/plots';
-import { GridContent } from '@ant-design/pro-components';
+import { GridContent, PageContainer } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
 import { Card, Col, Progress, Row, Statistic } from 'antd';
 import numeral from 'numeral';
@@ -23,7 +23,8 @@ const Monitor: FC = () => {
     };
   });
   return (
-    <GridContent>
+    <PageContainer>
+      <GridContent>
       <Row gutter={24}>
         <Col
           xl={18}
@@ -191,7 +192,8 @@ const Monitor: FC = () => {
           </Card>
         </Col>
       </Row>
-    </GridContent>
+      </GridContent>
+    </PageContainer>
   );
 };
 export default Monitor;
