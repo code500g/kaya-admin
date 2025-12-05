@@ -19,10 +19,11 @@ export type TableListItem = {
   sku?: string;
   totalPrice?: number;
   totalQuantity?: number;
+  orderStatus?: string;
   trackingNo?: string;
   shippingMethod?: string;
   shippingStatus?: string;
-  outboundStatus?: string;
+  outboundStatus?: number;
   labelUploaded?: boolean;
   interceptStatus?: string;
   fbaId?: string;

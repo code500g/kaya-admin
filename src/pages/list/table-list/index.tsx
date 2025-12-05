@@ -13,7 +13,7 @@ import {
   ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Drawer, Input, message } from 'antd';
+import { Alert, Button, Drawer, message, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
@@ -105,75 +105,150 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: '销售平台单号',
-      dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
-    },
-    {
       title: '平台代码',
-      dataIndex: 'desc',
-      valueType: 'textarea',
-    },
-    {
-      title: '总数量',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val}万`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
+      dataIndex: 'platformCode',
+      width: 120,
+      hideInTable: false,
+      valueType: 'select',
       valueEnum: {
-        0: {
-          text: '已签收',
-          status: 'Default',
-        },
-        1: {
-          text: '已出库',
-          status: 'Processing',
-        },
-        2: {
-          text: '自提',
-          status: 'Success',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
-        },
+        amazon: { text: '亚马逊' },
+        ebay: { text: 'eBay' },
+        shopify: { text: 'Shopify' },
+        other: { text: '其他' },
       },
+      formItemProps: { label: '平台' },
+    },
+    {
+      title: '销售平台单号',
+      dataIndex: 'platformOrderNo',
+      width: 160,
+    },
+    {
+      title: '批次号码',
+      dataIndex: 'batchNo',
+      width: 140,
+    },
+    {
+      title: '订单编号',
+      dataIndex: 'orderNo',
+      width: 140,
+    },
+    {
+      title: 'SKU',
+      dataIndex: 'sku',
+      width: 140,
     },
     {
       title: '创建时间',
-      sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'createdAt',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-
-        return defaultRender(item);
+      sorter: true,
+      hideInSearch: true,
+    },
+    {
+      title: '下单时间',
+      dataIndex: 'orderDateRange',
+      valueType: 'dateRange',
+      hideInTable: true,
+      search: {
+        transform: (value: string[]) => ({
+          orderStart: value?.[0],
+          orderEnd: value?.[1],
+        }),
       },
+    },
+    {
+      title: '总价格',
+      dataIndex: 'totalPrice',
+      valueType: 'money',
+      width: 120,
+    },
+    {
+      title: '总数量',
+      dataIndex: 'totalQuantity',
+      sorter: true,
+      width: 100,
+    },
+    {
+      title: '订单状态',
+      dataIndex: 'orderStatus',
+      valueType: 'select',
+      valueEnum: {
+        all: { text: '所有订单' },
+        shipped: { text: '已出库' },
+        pending: { text: '未出库' },
+        delivered: { text: '已签收' },
+        exception: { text: '异常' },
+      },
+    },
+    {
+      title: '快递单号',
+      dataIndex: 'trackingNo',
+      width: 160,
+    },
+    {
+      title: '运输方式',
+      dataIndex: 'shippingMethod',
+      valueType: 'select',
+      valueEnum: {
+        air: { text: '空运' },
+        sea: { text: '海运' },
+        express: { text: '快递' },
+        truck: { text: '卡车' },
+      },
+    },
+    {
+      title: '运输状态',
+      dataIndex: 'shippingStatus',
+      valueEnum: {
+        preparing: { text: '待发货' },
+        intransit: { text: '运输中' },
+        delivered: { text: '已送达' },
+      },
+    },
+    {
+      title: '出库状态',
+      dataIndex: 'outboundStatus',
+      valueEnum: {
+        notYet: { text: '未出库' },
+        partial: { text: '部分出库' },
+        done: { text: '已出库' },
+      },
+    },
+    {
+      title: '面单上传',
+      dataIndex: 'labelUploaded',
+      renderText: (val: boolean) => (val ? '是' : '否'),
+      valueType: 'select',
+      valueEnum: {
+        true: { text: '是' },
+        false: { text: '否' },
+      },
+    },
+    {
+      title: '拦截状态',
+      dataIndex: 'interceptStatus',
+      valueType: 'select',
+      valueEnum: {
+        none: { text: '无拦截' },
+        pending: { text: '待处理' },
+        blocked: { text: '已拦截' },
+      },
+    },
+    {
+      title: '多单号',
+      dataIndex: 'multiOrder',
+      hideInTable: true,
+      valueType: 'switch',
+      fieldProps: {
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+      },
+    },
+    {
+      title: 'FBA ID',
+      dataIndex: 'fbaId',
+      width: 140,
     },
     {
       title: '操作',
@@ -181,16 +256,21 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="copy"
           onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
+            message.success('已复制订单');
           }}
         >
-          配置
+          复制订单
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          订阅警报
+        <a
+          key="detail"
+          onClick={() => {
+            setCurrentRow(record);
+            setShowDetail(true);
+          }}
+        >
+          查看详情
         </a>,
       ],
     },
@@ -200,37 +280,70 @@ const TableList: React.FC = () => {
     <PageContainer
       header={{
         title: '仓储发货订单',
-        breadcrumb: {
-          routes: [
-            {
-              path: '/',
-              breadcrumbName: '首页',
-            },
-            {
-              path: '/warehouse-orders',
-              breadcrumbName: '仓储发货订单',
-            },
-          ],
-        },
       }}
     >
+      <Alert
+        style={{ marginBottom: 16 }}
+        message="单号渠道说明"
+        description={
+          <div
+            style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
+          >
+            {[
+              ['YWE', 'YW开头'],
+              ['UPS', '1Z开头'],
+              ['UNI渠道', 'UU / GV开头'],
+              ['SpeedX', 'SPX开头'],
+              ['HORIZON', 'HZ开头'],
+              ['GOFO Express', 'GF开头'],
+              ['FEDEX Economy', '61开头'],
+              ['PIGGY', 'PG开头'],
+              ['DHL Ecommerce', '926129开头'],
+              ['FEDEX', '7 / 2 / 8开头，总共12位'],
+              ['USPS', '923469 / 92144 / 920019开头'],
+              ['Amazon shipping', 'TBA / 936128 / 933468开头'],
+              ['ONTRAC', 'D开头'],
+              ['SWIFT X', 'SWX开头'],
+            ].map(([label, desc]) => (
+              <div key={label} style={{ marginRight: 24, marginBottom: 4 }}>
+                <span style={{ color: '#ff4d4f', fontWeight: 500 }}>
+                  {label}
+                </span>
+                ：{desc}
+              </div>
+            ))}
+          </div>
+        }
+        type="info"
+      />
       <ProTable<TableListItem, TableListPagination>
         headerTitle="仓储发货订单"
         actionRef={actionRef}
         rowKey="key"
         search={{
           labelWidth: 120,
+          defaultCollapsed: false,
+          collapsed: false,
+          collapseRender: false,
+          span: 6,
+        }}
+        form={{
+          layout: 'vertical',
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
+          <Space key="actions">
+            <Button type="primary">
+              <PlusOutlined /> 新增订单
+            </Button>
+            <Button>合并订单</Button>
+            <Button>批量备注</Button>
+            <Button>批量提交</Button>
+            <Button>下载面单</Button>
+            <Button>导入</Button>
+            <Button>导出</Button>
+            <Button>批量导入面单</Button>
+            <Button>签收统计导出</Button>
+          </Space>,
         ]}
         request={rule}
         columns={columns}
