@@ -1,7 +1,41 @@
-// @ts-expect-error
-/* eslint-disable */
 import { request } from '@umijs/max';
+import type { UploadFile } from 'antd/es/upload';
 import type { TableListItem } from './data';
+
+export type WarehouseOrderPayload = {
+  platformCode?: string;
+  platformOrderNo?: string;
+  storeNo?: string;
+  totalPrice?: number;
+  currency?: string;
+  dispatchType?: string;
+  signatureService?: string;
+  shippingMethod?: string;
+  labelType?: string;
+  trackingNos?: string;
+  businessType?: string;
+  specialInstruction?: string;
+  operationInstruction?: string;
+  recipientName?: string;
+  recipientLastName?: string;
+  companyName?: string;
+  countryCode?: string;
+  city?: string;
+  postalCode?: string;
+  address1?: string;
+  address2?: string;
+  state?: string;
+  houseNumber?: string;
+  phone?: string;
+  email?: string;
+  products?: {
+    name?: string;
+    quantity?: number;
+    unitPrice?: number;
+  }[];
+  attachments?: UploadFile[];
+  trackingNumbers?: string[];
+};
 
 /** 获取规则列表 GET /api/order */
 export async function order(
@@ -31,8 +65,6 @@ export async function order(
     ...(options || {}),
   })
     .then((response: any) => {
-      console.log('service.ts 接收到响应:', response);
-
       return {
         data: response.data || [],
         total: response.total || 0,
@@ -83,6 +115,18 @@ export async function removeRule(
   return request<Record<string, any>>('/api/order', {
     data,
     method: 'DELETE',
+    ...(options || {}),
+  });
+}
+
+/** 提交仓储发货订单 POST /api/warehouse-orders */
+export async function submitWarehouseOrder(
+  data: WarehouseOrderPayload,
+  options?: { [key: string]: any },
+) {
+  return request<Record<string, any>>('/api/warehouse-orders', {
+    data,
+    method: 'POST',
     ...(options || {}),
   });
 }

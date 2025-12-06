@@ -76,7 +76,24 @@ export default [
     path: '/warehouse-orders',
     name: 'warehouse-orders',
     icon: 'container',
-    component: './warehouse-orders',
+    routes: [
+      {
+        path: '/warehouse-orders',
+        component: './warehouse-orders',
+      },
+      {
+        path: '/warehouse-orders/new',
+        name: '新增仓储发货订单',
+        hideInMenu: true,
+        component: './warehouse-orders/new',
+      },
+    ],
+  },
+  {
+    path: '/one-piece-delivery',
+    name: 'one-piece-delivery',
+    icon: 'shopping',
+    component: './one-piece-delivery',
   },
   {
     path: '/fba-management',
@@ -95,12 +112,6 @@ export default [
     name: 'cross-border-logistics',
     icon: 'global',
     component: './cross-border-logistics',
-  },
-  {
-    path: '/one-piece-delivery',
-    name: 'one-piece-delivery',
-    icon: 'shopping',
-    component: './one-piece-delivery',
   },
   {
     path: '/product-inventory',
@@ -343,7 +354,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/dashboard/analysis',
+    redirect: '/warehouse-orders',
   },
   {
     component: '404',

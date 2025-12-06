@@ -13,7 +13,16 @@ import {
   ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Descriptions, Drawer, message, Space, Tag } from 'antd';
+import { history } from '@umijs/max';
+import {
+  Button,
+  ConfigProvider,
+  Descriptions,
+  Drawer,
+  message,
+  Space,
+  Tag,
+} from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
@@ -209,17 +218,13 @@ const TableList: React.FC = () => {
         const status = record.orderStatus || text;
         const { color, tagText, variant } = getOrderStatusConfig(status);
 
-        return (
-          <Tag color={color} variant={variant}>
-            {tagText}
-          </Tag>
-        );
+        return <Tag>{tagText}</Tag>;
       },
     },
     {
       title: '快递单号',
       dataIndex: 'trackingNo',
-      width: 160,
+      copyable: true,
     },
     {
       title: '运输方式',
@@ -251,9 +256,9 @@ const TableList: React.FC = () => {
       },
       render: (_, record) =>
         record.labelUploaded ? (
-          <span style={{ color: '#155DFB' }}>是</span>
+          <Tag color="green">是</Tag>
         ) : (
-          <span>否</span>
+          <Tag color="orange">否</Tag>
         ),
     },
     {
@@ -324,174 +329,179 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer
-      header={{
-        title: '仓储发货订单',
-      }}
-    >
-      <Descriptions
-        title="单号渠道说明"
-        column={7}
-        size="small"
-        bordered
-        style={{ marginBottom: 16 }}
+    <ConfigProvider componentSize="large">
+      <PageContainer
+        header={{
+          title: '仓储发货订单',
+        }}
       >
-        {channelList.map(([label, desc]) => (
-          <Descriptions.Item key={label} label={label}>
-            {desc}
-          </Descriptions.Item>
-        ))}
-      </Descriptions>
-      <ProTable<TableListItem, TableListPagination>
-        headerTitle="仓储发货订单"
-        actionRef={actionRef}
-        rowKey="key"
-        // 搜索表单配置
-        search={{
-          labelWidth: 'auto',
-          defaultCollapsed: false, // 默认展开所有搜索项
-          collapsed: false,
-          collapseRender: false,
-          span: 4, // 每个表单项占用的栅格数（24栅格系统）
-          className: 'custom-search-form',
-        }}
-        form={{
-          layout: 'horizontal',
-          // 配置表单 label 和 wrapper 的栅格比例
-          labelCol: { span: 7 },
-          wrapperCol: { span: 17 },
-        }}
-        toolBarRender={() => [
-          <Space key="actions">
-            <Button type="primary">
-              <PlusOutlined /> 新增订单
-            </Button>
-            <Button>合并订单</Button>
-            <Button>批量备注</Button>
-            <Button>批量提交</Button>
-            <Button>下载面单</Button>
-            <Button>导入</Button>
-            <Button>导出</Button>
-            <Button>批量导入面单</Button>
-            <Button>签收统计导出</Button>
-          </Space>,
-        ]}
-        request={order}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-              <span>
-                服务调用次数总计{' '}
-                {selectedRowsState.reduce(
-                  (pre, item) => pre + (item.callNo ?? 0),
-                  0,
-                )}{' '}
-                万
-              </span>
-            </div>
-          }
+        <Descriptions
+          title="单号渠道说明"
+          column={7}
+          size="small"
+          bordered
+          style={{ marginBottom: 16 }}
         >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
-      <ModalForm
-        title="新建规则"
-        width="400px"
-        open={createModalVisible}
-        onOpenChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: '规则名称为必填项',
-            },
+          {channelList.map(([label, desc]) => (
+            <Descriptions.Item key={label} label={label}>
+              {desc}
+            </Descriptions.Item>
+          ))}
+        </Descriptions>
+        <ProTable<TableListItem, TableListPagination>
+          headerTitle="仓储发货订单"
+          actionRef={actionRef}
+          rowKey="key"
+          // 搜索表单配置
+          search={{
+            labelWidth: 'auto',
+            defaultCollapsed: false, // 默认展开所有搜索项
+            collapsed: false,
+            collapseRender: false,
+            span: 4, // 每个表单项占用的栅格数（24栅格系统）
+            className: 'custom-search-form',
+          }}
+          form={{
+            layout: 'horizontal',
+            // 配置表单 label 和 wrapper 的栅格比例
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 },
+          }}
+          toolBarRender={() => [
+            <Space key="actions">
+              <Button
+                type="primary"
+                onClick={() => history.push('/warehouse-orders/new')}
+              >
+                <PlusOutlined /> 新增订单
+              </Button>
+              <Button>合并订单</Button>
+              <Button>批量备注</Button>
+              <Button>批量提交</Button>
+              <Button>下载面单</Button>
+              <Button>导入</Button>
+              <Button>导出</Button>
+              <Button>批量导入面单</Button>
+              <Button>签收统计导出</Button>
+            </Space>,
           ]}
-          width="md"
-          name="name"
+          request={order}
+          columns={columns}
+          rowSelection={{
+            onChange: (_, selectedRows) => {
+              setSelectedRows(selectedRows);
+            },
+          }}
         />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value, currentRow);
+        {selectedRowsState?.length > 0 && (
+          <FooterToolbar
+            extra={
+              <div>
+                已选择{' '}
+                <a
+                  style={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {selectedRowsState.length}
+                </a>{' '}
+                项 &nbsp;&nbsp;
+                <span>
+                  服务调用次数总计{' '}
+                  {selectedRowsState.reduce(
+                    (pre, item) => pre + (item.callNo ?? 0),
+                    0,
+                  )}{' '}
+                  万
+                </span>
+              </div>
+            }
+          >
+            <Button
+              onClick={async () => {
+                await handleRemove(selectedRowsState);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            >
+              批量删除
+            </Button>
+            <Button type="primary">批量审批</Button>
+          </FooterToolbar>
+        )}
+        <ModalForm
+          title="新建规则"
+          width="400px"
+          open={createModalVisible}
+          onOpenChange={handleModalVisible}
+          onFinish={async (value) => {
+            const success = await handleAdd(value as TableListItem);
+            if (success) {
+              handleModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+        >
+          <ProFormText
+            rules={[
+              {
+                required: true,
+                message: '规则名称为必填项',
+              },
+            ]}
+            width="md"
+            name="name"
+          />
+          <ProFormTextArea width="md" name="desc" />
+        </ModalForm>
+        <UpdateForm
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value, currentRow);
 
-          if (success) {
+            if (success) {
+              handleUpdateModalVisible(false);
+              setCurrentRow(undefined);
+
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+          onCancel={() => {
             handleUpdateModalVisible(false);
             setCurrentRow(undefined);
+          }}
+          updateModalVisible={updateModalVisible}
+          values={currentRow || {}}
+        />
 
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
-
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<TableListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<TableListItem>[]}
-          />
-        )}
-      </Drawer>
-    </PageContainer>
+        <Drawer
+          width={600}
+          open={showDetail}
+          onClose={() => {
+            setCurrentRow(undefined);
+            setShowDetail(false);
+          }}
+          closable={false}
+        >
+          {currentRow?.name && (
+            <ProDescriptions<TableListItem>
+              column={2}
+              title={currentRow?.name}
+              request={async () => ({
+                data: currentRow || {},
+              })}
+              params={{
+                id: currentRow?.name,
+              }}
+              columns={columns as ProDescriptionsItemProps<TableListItem>[]}
+            />
+          )}
+        </Drawer>
+      </PageContainer>
+    </ConfigProvider>
   );
 };
 

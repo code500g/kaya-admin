@@ -52,7 +52,7 @@ export default {
   'menu.warehouse-orders': '仓储发货订单',
   'menu.ocean-bill': '海运提单',
   'menu.cross-border-logistics': '跨境物流',
-  'menu.one-piece-delivery': '一件代发',
+  'menu.one-piece-delivery': '一件代发/退换货',
   'menu.product-inventory': '商品库存管理',
   'menu.returns-management': '退货管理',
   'menu.settings-management': '设置管理',

@@ -378,7 +378,6 @@ function getOrder(req: Request, res: Response, u: string) {
     pageSize: finalPageSize,
     current: parseInt(`${params.currentPage}`, 10) || 1,
   };
-  console.log('result', result);
   return res.json(result);
 }
 
@@ -457,4 +456,47 @@ export default {
   'POST /api/order': postOrder,
   'DELETE /api/order': postOrder,
   'PUT /api/order': postOrder,
+  'POST /api/warehouse-orders': (req: Request, res: Response) => {
+    const body = req.body || {};
+    const products = (body.products || []) as { quantity?: number }[];
+    const totalQuantity = products.reduce(
+      (sum, item) => sum + (Number(item?.quantity) || 0),
+      0,
+    );
+    const newOrder: TableListItem = {
+      key: Date.now(),
+      href: 'https://ant.design',
+      avatar:
+        'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
+      name: body.platformOrderNo || `订单 ${tableListDataSource.length + 1}`,
+      owner: body.storeNo || '仓库',
+      desc: body.specialInstruction || '仓储发货订单',
+      callNo: 0,
+      status: '0',
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      progress: 0,
+      platformCode: body.platformCode,
+      platformOrderNo: body.platformOrderNo,
+      batchNo: '',
+      orderNo: '',
+      sku: '',
+      totalPrice: body.totalPrice,
+      totalQuantity,
+      orderStatus: 'pending',
+      trackingNo:
+        (body.trackingNumbers && body.trackingNumbers[0]) ||
+        (body.trackingNos || '').split?.('\n')?.[0] ||
+        '',
+      shippingMethod: body.shippingMethod,
+      shippingStatus: 'preparing',
+      outboundStatus: 0,
+      labelUploaded: false,
+      interceptStatus: 'none',
+      fbaId: '',
+      multiOrder: false,
+    };
+    tableListDataSource = [newOrder, ...tableListDataSource];
+    res.json({ success: true, data: newOrder });
+  },
 };
