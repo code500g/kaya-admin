@@ -9,7 +9,7 @@ const Settings: ProLayoutProps & {
 } = {
   navTheme: 'light',
   colorPrimary: '#155DFB',
-  layout: 'side',
+  layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: true,
   fixSiderbar: true,
@@ -23,14 +23,19 @@ const Settings: ProLayoutProps & {
     // 参见ts声明，demo 见文档，通过token 修改样式
     //https://procomponents.ant.design/components/layout
     sider: {
-      colorMenuBackground: '#233044ff',
+      colorMenuBackground: '#001529',
       colorTextMenu: 'rgba(238, 238, 238, 0.7)',
       colorTextMenuSelected: 'rgb(238, 238, 238)',
       colorTextMenuItemHover: 'rgb(238, 238, 238)',
       colorBgMenuItemHover: 'rgba(0, 0, 0, 0.08)',
-      colorBgMenuItemSelected: 'rgb(30, 41, 58)',
+      colorBgMenuItemSelected: '#155DFB',
     },
-    header: {},
+    header: {
+      colorBgHeader: '#001529',
+      colorHeaderTitle: 'white',
+      colorTextRightActionsItem: 'rgba(238, 238, 238, 0.7)',
+      heightLayoutHeader: 65,
+    },
   },
 };
 

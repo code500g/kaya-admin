@@ -128,7 +128,7 @@ export default defineConfig({
             iconSize: 18, // 菜单图标大小
             iconMarginInlineEnd: 12, // 菜单图标和文字间距
             subMenuItemSelectedColor: 'rgba(238, 238, 238)', //子菜单内有选中项时，子菜单标题色
-            itemMarginBlock: 8, //菜单项纵向外间距
+            itemMarginBlock: 12, //菜单项纵向外间距
             itemMarginInline: 0, //菜单项横向外间距
           },
         },

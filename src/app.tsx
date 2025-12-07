@@ -1,10 +1,12 @@
+import { BellOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import { AvatarDropdown, AvatarName, Footer } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import '@ant-design/v5-patch-for-react-19';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history } from '@umijs/max';
+import { history, SelectLang } from '@umijs/max';
+import { Badge } from 'antd';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
@@ -57,18 +59,18 @@ export const layout: RunTimeLayoutConfig = ({
   setInitialState,
 }) => {
   return {
-    // actionsRender: () => [
-    //   <div key="account-info" className="header-account-info">
-    //     <span>我的帐户ID: admin</span>
-    //     <span>我的邀请码: 1</span>
-    //     <span>我的公司编码: YWS23100802</span>
-    //   </div>,
-    //   <Badge key="msg" count={5} offset={[-5, 6]} className="header-badge">
-    //     <BellOutlined style={{ color: "#000", fontSize: 20 }} />
-    //   </Badge>,
-    //   <Question key="doc" />,
-    //   <SelectLang key="SelectLang" />,
-    // ],
+    actionsRender: () => [
+      <div key="account-info" className="header-account-info">
+        <span>我的帐户ID: admin</span>
+        <span>我的邀请码: 1</span>
+        <span>我的公司编码: YWS23100802</span>
+      </div>,
+      <Badge key="msg" count={5} offset={[-5, 6]} className="header-badge">
+        <BellOutlined style={{ color: 'white', fontSize: 20 }} />
+      </Badge>,
+      <QuestionCircleOutlined key="doc" />,
+      <SelectLang key="SelectLang" />,
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
