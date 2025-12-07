@@ -55,6 +55,7 @@ export async function order(
     success?: boolean;
     pageSize?: number;
     current?: number;
+    extra?: Record<string, any>;
   }>('/api/order', {
     method: 'GET',
     params: {
@@ -71,6 +72,7 @@ export async function order(
         success: response.success !== false, // 默认为 true
         pageSize: response.pageSize,
         current: response.current,
+        extra: response.extra,
       };
     })
     .catch((error: any) => {

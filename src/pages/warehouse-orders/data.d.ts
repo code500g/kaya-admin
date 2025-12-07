@@ -46,6 +46,7 @@ export type TableListParams = {
   name?: string;
   desc?: string;
   key?: number;
+  outboundStatus?: number;
   pageSize?: number;
   currentPage?: number;
   filter?: Record<string, any[]>;

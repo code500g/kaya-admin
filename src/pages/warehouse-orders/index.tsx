@@ -3,6 +3,7 @@ import type {
   ActionType,
   ProColumns,
   ProDescriptionsItemProps,
+  ProFormInstance,
 } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -14,13 +15,16 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
+import type { TabsProps } from 'antd';
 import {
   Button,
+  Collapse,
   ConfigProvider,
   Descriptions,
   Drawer,
   message,
   Space,
+  Tabs,
   Tag,
 } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -110,33 +114,16 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('all');
+  const [tabCounts, setTabCounts] = useState({
+    all: 0,
+    shipped: 0,
+    unshipped: 0,
+  });
+  const formRef = useRef<ProFormInstance>();
   /** 国际化配置 */
 
   const columns: ProColumns<TableListItem>[] = [
-    {
-      title: '出库状态',
-      dataIndex: 'outboundStatus',
-      valueEnum: {
-        0: {
-          color: 'grey',
-          text: '未出库',
-        },
-        1: {
-          color: 'green',
-          text: '已出库',
-        },
-      },
-      render: (_, record) =>
-        record.outboundStatus === 1 ? (
-          <Tag color="default" variant={'filled'}>
-            已出库
-          </Tag>
-        ) : (
-          <Tag color="#f50" variant={'filled'}>
-            未出库
-          </Tag>
-        ),
-    },
     {
       title: '平台代码',
       dataIndex: 'platformCode',
@@ -311,6 +298,12 @@ const TableList: React.FC = () => {
     },
   ];
 
+  const tabItems: TabsProps['items'] = [
+    { key: 'all', label: `所有订单（${tabCounts.all}）` },
+    { key: 'shipped', label: `已出库（${tabCounts.shipped}）` },
+    { key: 'unshipped', label: `未出库（${tabCounts.unshipped}）` },
+  ];
+
   const channelList = [
     ['YWE', 'YW开头'],
     ['UPS', '1Z开头'],
@@ -335,19 +328,16 @@ const TableList: React.FC = () => {
           title: '仓储发货订单',
         }}
       >
-        <Descriptions
-          title="单号渠道说明"
-          column={7}
-          size="small"
-          bordered
-          style={{ marginBottom: 16 }}
-        >
-          {channelList.map(([label, desc]) => (
-            <Descriptions.Item key={label} label={label}>
-              {desc}
-            </Descriptions.Item>
-          ))}
-        </Descriptions>
+        <Tabs
+          activeKey={activeTab}
+          items={tabItems}
+          onChange={(key) => {
+            setActiveTab(key);
+            formRef.current?.resetFields();
+            actionRef.current?.reload();
+          }}
+          style={{}}
+        />
         <ProTable<TableListItem, TableListPagination>
           headerTitle="仓储发货订单"
           actionRef={actionRef}
@@ -367,6 +357,7 @@ const TableList: React.FC = () => {
             labelCol: { span: 7 },
             wrapperCol: { span: 17 },
           }}
+          formRef={formRef}
           toolBarRender={() => [
             <Space key="actions">
               <Button
@@ -385,7 +376,45 @@ const TableList: React.FC = () => {
               <Button>签收统计导出</Button>
             </Space>,
           ]}
-          request={order}
+          tableExtraRender={() => (
+            <Collapse
+              bordered={false}
+              defaultActiveKey={['channel']}
+              style={{ marginBottom: 16, backgroundColor: '#FFFFFF' }}
+            >
+              <Collapse.Panel header="渠道单号说明" key="channel">
+                <Descriptions column={7} size="small" bordered>
+                  {channelList.map(([label, desc]) => (
+                    <Descriptions.Item key={label} label={label}>
+                      {desc}
+                    </Descriptions.Item>
+                  ))}
+                </Descriptions>
+              </Collapse.Panel>
+            </Collapse>
+          )}
+          request={async (params, sorter, filter) => {
+            const result = await order({
+              ...params,
+              ...sorter,
+              ...filter,
+              outboundStatus:
+                activeTab === 'shipped'
+                  ? 1
+                  : activeTab === 'unshipped'
+                    ? 0
+                    : undefined,
+            });
+
+            const extra = (result as any)?.extra || {};
+            setTabCounts((prev) => ({
+              all: extra.totalAll ?? result.total ?? prev.all,
+              shipped: extra.totalShipped ?? prev.shipped,
+              unshipped: extra.totalUnshipped ?? prev.unshipped,
+            }));
+
+            return result;
+          }}
           columns={columns}
           rowSelection={{
             onChange: (_, selectedRows) => {

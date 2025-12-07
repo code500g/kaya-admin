@@ -317,10 +317,44 @@ function getOrder(req: Request, res: Response, u: string) {
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query as unknown as TableListParams;
 
-  let dataSource = [...tableListDataSource].slice(
-    ((current as number) - 1) * (pageSize as number),
-    (current as number) * (pageSize as number),
-  );
+  let dataSource = [...tableListDataSource];
+
+  if (params.name) {
+    dataSource = dataSource.filter((data) =>
+      data.name.includes(params.name || ''),
+    );
+  }
+
+  if (params.filter) {
+    const filter = JSON.parse(params.filter as any) as Record<string, string[]>;
+    if (Object.keys(filter).length > 0) {
+      dataSource = dataSource.filter((item) => {
+        return Object.keys(filter).some((key) => {
+          if (!filter[key]) {
+            return true;
+          }
+          if (filter[key].includes(`${item[key as 'status']}`)) {
+            return true;
+          }
+          return false;
+        });
+      });
+    }
+  }
+
+  const filteredForStats = [...dataSource];
+
+  // 根据出库状态过滤
+  const outboundStatusParam =
+    params.outboundStatus !== undefined
+      ? Number(params.outboundStatus)
+      : undefined;
+  if (outboundStatusParam === 0 || outboundStatusParam === 1) {
+    dataSource = dataSource.filter(
+      (item) => item.outboundStatus === outboundStatusParam,
+    );
+  }
+
   if (params.sorter) {
     const sorter = JSON.parse(params.sorter as any);
     dataSource = dataSource.sort((prev: any, next: any) => {
@@ -343,40 +377,34 @@ function getOrder(req: Request, res: Response, u: string) {
       return sortNumber;
     });
   }
-  if (params.filter) {
-    const filter = JSON.parse(params.filter as any) as Record<string, string[]>;
-    if (Object.keys(filter).length > 0) {
-      dataSource = dataSource.filter((item) => {
-        return Object.keys(filter).some((key) => {
-          if (!filter[key]) {
-            return true;
-          }
-          if (filter[key].includes(`${item[key as 'status']}`)) {
-            return true;
-          }
-          return false;
-        });
-      });
-    }
-  }
-
-  if (params.name) {
-    dataSource = dataSource.filter((data) =>
-      data.name.includes(params.name || ''),
-    );
-  }
 
   let finalPageSize = 10;
   if (params.pageSize) {
     finalPageSize = parseInt(`${params.pageSize}`, 10);
   }
 
+  const total = dataSource.length;
+
+  dataSource = dataSource.slice(
+    ((current as number) - 1) * (pageSize as number),
+    (current as number) * (pageSize as number),
+  );
+
+  const outboundStats = {
+    totalAll: filteredForStats.length,
+    totalShipped: filteredForStats.filter((item) => item.outboundStatus === 1)
+      .length,
+    totalUnshipped: filteredForStats.filter((item) => item.outboundStatus === 0)
+      .length,
+  };
+
   const result = {
     data: dataSource,
-    total: tableListDataSource.length,
+    total,
     success: true,
     pageSize: finalPageSize,
     current: parseInt(`${params.currentPage}`, 10) || 1,
+    extra: outboundStats,
   };
   return res.json(result);
 }

@@ -54,19 +54,19 @@ export default [
       },
       {
         name: 'analysis',
-        icon: 'smile',
+        icon: 'dashboard',
         path: '/dashboard/analysis',
         component: './dashboard/analysis',
       },
       {
         name: 'monitor',
-        icon: 'smile',
+        icon: 'dashboard',
         path: '/dashboard/monitor',
         component: './dashboard/monitor',
       },
       {
         name: 'workplace',
-        icon: 'smile',
+        icon: 'dashboard',
         path: '/dashboard/workplace',
         component: './dashboard/workplace',
       },
