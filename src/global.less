@@ -86,15 +86,42 @@ body,
 //   inset-block-start: 64px;
 //   // background:rgb(35, 48, 68)
 // }
+.header-timezones {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  background: transparent !important;
+  cursor: auto;
+  .timezones {
+    display: flex;
+    gap: 18px;
+  }
+  .label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    height: 18px;
+    padding-right: 18px;
+    border-right: 1px solid rgba(238, 238, 238, 0.7);
+    span {
+      white-space: nowrap;
+    }
+    .tz {
+      font-weight: 500;
+    }
+  }
+  .timezones > div:last-child .label {
+    border-right: none;
+  }
+}
 .header-account-info {
   display: flex;
   gap: 36px;
   align-items: center;
-  padding: 0;
   font-size: 14px;
-
   background: transparent !important;
-  cursor: default;
+  cursor: auto;
   span {
     white-space: nowrap;
   }
@@ -144,22 +171,22 @@ ol {
     font-size: 22px;
   }
 }
-.ant-pro-layout .ant-pro-sider-logo >a >img {
-    display: inline-block;
-    height: 30px;
-    vertical-align: middle;
+.ant-pro-layout .ant-pro-sider-logo > a > img {
+  display: inline-block;
+  height: 30px;
+  vertical-align: middle;
 }
 .ant-pro-layout .ant-pro-sider-logo > a > h1 {
   color: #ebf5ff;
+  font-weight: 500;
   font-size: 20px;
-  font-weight:500;
 }
 
-.ant-pro-layout .ant-pro-sider-logo{
+.ant-pro-layout .ant-pro-sider-logo {
   padding: 24px 12px 24px 12px;
 }
 .ant-pro-base-menu-inline-item-title {
-    gap: 12px
+  gap: 12px;
 }
 
 @media (max-width: 768px) {

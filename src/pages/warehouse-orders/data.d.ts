@@ -34,6 +34,7 @@ export type TableListPagination = {
   total: number;
   pageSize: number;
   current: number;
+  outboundStatus?: number;
 };
 
 export type TableListData = {
@@ -48,6 +49,7 @@ export type TableListParams = {
   key?: number;
   outboundStatus?: number;
   pageSize?: number;
+  current?: number;
   currentPage?: number;
   filter?: Record<string, any[]>;
   sorter?: Record<string, any>;

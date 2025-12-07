@@ -13,6 +13,14 @@ const useStyles = createStyles(({ token }) => {
       justifyContent: 'space-between',
       boxShadow: token.boxShadowSecondary,
     },
+    banner: {
+      position: 'absolute',
+      top: '0px',
+      right: '20px',
+      width: '112px',
+      height: '112px',
+      objectFit: 'cover',
+    },
     rechargeTitle: {
       fontSize: '16px',
       marginBottom: '12px',

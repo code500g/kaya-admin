@@ -30,7 +30,11 @@ import {
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import type { TableListItem, TableListPagination } from './data';
+import type {
+  TableListItem,
+  TableListPagination,
+  TableListParams,
+} from './data';
 import { addRule, order, removeRule, updateRule } from './service';
 
 /**
@@ -120,8 +124,7 @@ const TableList: React.FC = () => {
     shipped: 0,
     unshipped: 0,
   });
-  const formRef = useRef<ProFormInstance>();
-  /** 国际化配置 */
+  const formRef = useRef<ProFormInstance | undefined>(undefined);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -338,7 +341,7 @@ const TableList: React.FC = () => {
           }}
           style={{}}
         />
-        <ProTable<TableListItem, TableListPagination>
+        <ProTable<TableListItem, TableListParams>
           headerTitle="仓储发货订单"
           actionRef={actionRef}
           rowKey="key"
@@ -395,7 +398,7 @@ const TableList: React.FC = () => {
           )}
           request={async (params, sorter, filter) => {
             const result = await order({
-              ...params,
+              ...(params as any),
               ...sorter,
               ...filter,
               outboundStatus:

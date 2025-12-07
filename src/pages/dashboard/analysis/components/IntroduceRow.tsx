@@ -1,12 +1,13 @@
-import { InfoCircleOutlined, MoneyCollectFilled } from "@ant-design/icons";
-import { Area } from "@ant-design/plots";
-import { Button, Col, Progress, Row, Tooltip } from "antd";
-import numeral from "numeral";
-import type { DataItem } from "../data.d";
-import useStyles from "../style.style";
-import Yuan from "../utils/Yuan";
-import { ChartCard, Field } from "./Charts";
-import Trend from "./Trend";
+import { InfoCircleOutlined, MoneyCollectFilled } from '@ant-design/icons';
+import { Area } from '@ant-design/plots';
+import { Button, Col, Progress, Row, Tooltip } from 'antd';
+import numeral from 'numeral';
+import bannerVector from '../../../../../public/banner_vector.png';
+import type { DataItem } from '../data.d';
+import useStyles from '../style.style';
+import Yuan from '../utils/Yuan';
+import { ChartCard, Field } from './Charts';
+import Trend from './Trend';
 
 const topColResponsiveProps = {
   xs: 24,
@@ -30,6 +31,7 @@ const IntroduceRow = ({
     <Row gutter={24}>
       <Col {...topColResponsiveProps}>
         <div className={styles.rechargeCard}>
+          {/* <img src={bannerVector} className={styles.banner} /> */}
           <div className={styles.rechargeTitle}>
             <MoneyCollectFilled className={styles.rechargeIcon} />
             <span>账户余额</span>
@@ -60,7 +62,7 @@ const IntroduceRow = ({
           footer={
             <Field
               label="日销售额"
-              value={`￥${numeral(12423).format("0,0")}`}
+              value={`￥${numeral(12423).format('0,0')}`}
             />
           }
           contentHeight={46}
@@ -91,7 +93,7 @@ const IntroduceRow = ({
               <InfoCircleOutlined />
             </Tooltip>
           }
-          total={numeral(6560).format("0,0")}
+          total={numeral(6560).format('0,0')}
           footer={<Field label="转化率" value="60%" />}
           contentHeight={46}
         >
@@ -111,9 +113,9 @@ const IntroduceRow = ({
             height={46}
             axis={false}
             style={{
-              fill: "linear-gradient(-90deg, white 0%, #975FE4 100%)",
+              fill: 'linear-gradient(-90deg, white 0%, #975FE4 100%)',
               fillOpacity: 0.6,
-              width: "100%",
+              width: '100%',
             }}
             padding={-20}
             data={visitData}
@@ -134,8 +136,8 @@ const IntroduceRow = ({
           footer={
             <div
               style={{
-                whiteSpace: "nowrap",
-                overflow: "hidden",
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
               }}
             >
               <Trend
@@ -157,7 +159,7 @@ const IntroduceRow = ({
         >
           <Progress
             percent={78}
-            strokeColor={{ from: "#108ee9", to: "#87d068" }}
+            strokeColor={{ from: '#108ee9', to: '#87d068' }}
             status="active"
           />
         </ChartCard>

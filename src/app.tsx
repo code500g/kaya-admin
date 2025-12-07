@@ -7,11 +7,72 @@ import '@ant-design/v5-patch-for-react-19';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history, SelectLang } from '@umijs/max';
 import { Badge } from 'antd';
+import React, { useEffect, useState } from 'react';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
 const isDev = process.env.NODE_ENV === 'development' || process.env.CI;
 const loginPath = '/user/login';
+
+const TimezoneClock: React.FC = () => {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (timeZone: string) =>
+    new Intl.DateTimeFormat('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone,
+    }).format(now);
+
+  const zones = [
+    {
+      label: '美东·东部时区',
+      warehouse: '纽约仓',
+      tz: 'America/New_York',
+      hour: -13,
+    },
+    {
+      label: '美中·中部时区',
+      warehouse: '芝加哥仓',
+      tz: 'America/Chicago',
+      hour: -14,
+    },
+    {
+      label: '美西·太平洋时区',
+      warehouse: '洛杉矶仓',
+      tz: 'America/Los_Angeles',
+      hour: -16,
+    },
+  ];
+
+  return (
+    <div className="header-timezones">
+      <span className="timezones-title">世界时间：</span>
+      <div className="timezones">
+        {zones.map((zone) => (
+          <div key={zone.tz}>
+            {/* <span className="label">
+            <span>{zone.label}({zone.hour}h)</span>
+            <span></span>
+          </span> */}
+            <span className="label">
+              <span>
+                {zone.warehouse}({zone.hour}h)
+              </span>
+              <span className="tz">{formatTime(zone.tz)}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
@@ -60,9 +121,9 @@ export const layout: RunTimeLayoutConfig = ({
 }) => {
   return {
     actionsRender: () => [
+      <TimezoneClock key="tz" />,
       <div key="account-info" className="header-account-info">
-        <span>我的帐户ID: admin</span>
-        <span>我的邀请码: 1</span>
+        <span>我的邀请码: Nii55VFb</span>
         <span>我的公司编码: YWS23100802</span>
       </div>,
       <Badge key="msg" count={5} offset={[-5, 6]} className="header-badge">
