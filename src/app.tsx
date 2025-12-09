@@ -1,12 +1,12 @@
-import { BellOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { BellOutlined, MoreOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import { AvatarDropdown, AvatarName, Footer } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import '@ant-design/v5-patch-for-react-19';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history, SelectLang } from '@umijs/max';
-import { Badge } from 'antd';
+import { history } from '@umijs/max';
+import { Badge, Dropdown, Grid } from 'antd';
 import React, { useEffect, useState } from 'react';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
@@ -14,7 +14,15 @@ import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development' || process.env.CI;
 const loginPath = '/user/login';
 
-const TimezoneClock: React.FC = () => {
+type TimezoneClockProps = {
+  fontSize?: number;
+  gap?: number;
+};
+
+const TimezoneClock: React.FC<TimezoneClockProps> = ({
+  fontSize = 14,
+  gap = 12,
+}) => {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -32,19 +40,19 @@ const TimezoneClock: React.FC = () => {
 
   const zones = [
     {
-      label: '美东·东部时区',
+      label: '美东时区',
       warehouse: '纽约仓',
       tz: 'America/New_York',
       hour: -13,
     },
     {
-      label: '美中·中部时区',
+      label: '美中时区',
       warehouse: '芝加哥仓',
       tz: 'America/Chicago',
       hour: -14,
     },
     {
-      label: '美西·太平洋时区',
+      label: '美西时区',
       warehouse: '洛杉矶仓',
       tz: 'America/Los_Angeles',
       hour: -16,
@@ -52,18 +60,14 @@ const TimezoneClock: React.FC = () => {
   ];
 
   return (
-    <div className="header-timezones">
+    <div className="header-timezones" style={{ gap, fontSize }}>
       <span className="timezones-title">世界时间：</span>
-      <div className="timezones">
+      <div className="timezones" style={{ gap }}>
         {zones.map((zone) => (
           <div key={zone.tz}>
-            {/* <span className="label">
-            <span>{zone.label}({zone.hour}h)</span>
-            <span></span>
-          </span> */}
-            <span className="label">
+            <span className="label" style={{ gap }}>
               <span>
-                {zone.warehouse}({zone.hour}h)
+                {zone.label}({zone.hour}h)
               </span>
               <span className="tz">{formatTime(zone.tz)}</span>
             </span>
@@ -72,6 +76,78 @@ const TimezoneClock: React.FC = () => {
       </div>
     </div>
   );
+};
+
+const HeaderActions: React.FC = () => {
+  const screens = Grid.useBreakpoint();
+  const isCompact = !screens.xxl; // xl 及以下
+  const showDropdown = !screens.lg; // md 及以下折叠成 icon
+
+  const fontSize = isCompact ? 12 : 14;
+  const gap = isCompact ? 8 : 12;
+
+  const accountInfo = (
+    <div
+      key="account-info"
+      className="header-account-info"
+      style={{ display: 'flex', gap, fontSize }}
+    >
+      <span>邀请码: Nii55VFb</span>
+      <span>公司编码: YWS23100802</span>
+    </div>
+  );
+
+  const tz = <TimezoneClock key="tz" fontSize={fontSize} gap={gap} />;
+
+  if (showDropdown) {
+    return [
+      <Dropdown
+        key="header-dropdown"
+        placement="bottomRight"
+        menu={{
+          items: [
+            { key: 'tz', label: tz },
+            { key: 'account', label: accountInfo },
+          ],
+        }}
+      >
+        <MoreOutlined style={{ fontSize: 18 }} />
+      </Dropdown>,
+      <Badge
+        key="msg"
+        size="small"
+        count={5}
+        offset={[-5, 6]}
+        color={'#155DFB'}
+        className="header-badge"
+      >
+        <BellOutlined
+          style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 18 }}
+        />
+      </Badge>,
+      // <QuestionCircleOutlined key="doc" />,
+      // <SelectLang key="SelectLang" />,
+    ];
+  }
+
+  return [
+    tz,
+    accountInfo,
+    <Badge
+      size="small"
+      count={5}
+      color={'#155DFB'}
+      className="header-badge"
+      key="msg"
+      offset={[-5, 6]}
+    >
+      <BellOutlined
+        style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 18 }}
+      />
+    </Badge>,
+    // <QuestionCircleOutlined key="doc" />,
+    // <SelectLang key="SelectLang" />,
+  ];
 };
 
 /**
@@ -120,18 +196,8 @@ export const layout: RunTimeLayoutConfig = ({
   setInitialState,
 }) => {
   return {
-    actionsRender: () => [
-      <TimezoneClock key="tz" />,
-      <div key="account-info" className="header-account-info">
-        <span>我的邀请码: Nii55VFb</span>
-        <span>我的公司编码: YWS23100802</span>
-      </div>,
-      <Badge key="msg" count={5} offset={[-5, 6]} className="header-badge">
-        <BellOutlined style={{ color: 'white', fontSize: 20 }} />
-      </Badge>,
-      <QuestionCircleOutlined key="doc" />,
-      <SelectLang key="SelectLang" />,
-    ],
+    headerContentRender: () => [],
+    actionsRender: () => [<HeaderActions key="header-actions" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,

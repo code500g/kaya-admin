@@ -120,16 +120,17 @@ export default defineConfig({
         cssVar: true,
         token: {
           fontFamily:
-            "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+            "AlibabaSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
           borderRadius: 4,
         },
         components: {
           Menu: {
+            itemHeight: 46, // 菜单项高度
             iconSize: 18, // 菜单图标大小
-            iconMarginInlineEnd: 12, // 菜单图标和文字间距
             subMenuItemSelectedColor: 'rgba(238, 238, 238)', //子菜单内有选中项时，子菜单标题色
-            itemMarginBlock: 12, //菜单项纵向外间距
-            itemMarginInline: 0, //菜单项横向外间距
+            itemMarginBlock: 10, //菜单项纵向外间距
+            itemMarginInline: 4, //菜单项横向外间距
+            itemBorderRadius: 8, // 菜单项圆角
           },
         },
       },

@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    '帮助跨境电商企业拥有更先进的供应链',
+  'pages.layouts.userLayout.title': '以智能技术与物流，打造跨境电商先进供应链',
   'pages.login.accountLogin.tab': '账户密码登录',
   'pages.login.accountLogin.errorMessage':
     '错误的用户名和密码(admin/ant.design)',

@@ -45,9 +45,9 @@ export default {
     res.send({
       success: true,
       data: {
-        name: 'KAYA admin',
+        name: '开亚OMS管理员',
         avatar:
-          '/public/logo.svg',
+          '/banner_vector.png',
         userid: '00000001',
         email: 'antdesign@alipay.com',
         signature: '海纳百川，有容乃大',

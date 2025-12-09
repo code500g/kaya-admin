@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixSiderbar: true,
   colorWeak: false,
   footerRender: false,
-  title: '开亚订单管理平台',
+  title: '开亚OMS下单操作平台',
   pwa: true,
   logo: '/logo.svg',
   iconfontUrl: '',
@@ -32,9 +32,10 @@ const Settings: ProLayoutProps & {
     },
     header: {
       colorBgHeader: '#001529',
-      colorHeaderTitle: 'white',
-      colorTextRightActionsItem: 'rgba(238, 238, 238, 0.7)',
-      heightLayoutHeader: 65,
+      colorHeaderTitle: 'rgba(255, 255, 255)',
+      colorTextRightActionsItem: 'rgba(255, 255, 255, 0.7)',
+      colorBgRightActionsItemHover: 'rgba(255, 255,255, 0.1)',
+      heightLayoutHeader: 64,
     },
   },
 };

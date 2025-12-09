@@ -51,14 +51,13 @@ const user = [
 
 // 当前用户信息
 const currentUseDetail = {
-  name: 'KAYA admin',
-  avatar:
-    '/public/logo.svg',
+  name: '开亚OMS管理员',
+  avatar: '/logo.svg',
   userid: '00000001',
-  email: 'antdesign@alipay.com',
-  signature: '海纳百川，有容乃大',
-  title: '交互专家',
-  group: '蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED',
+  email: 'admin@kaya.com',
+  signature: '向超级个体进化',
+  title: '🦾',
+  group: '开亚国际－事业群－平台部－技术部－UED',
   tags: [
     {
       key: '0',
@@ -70,19 +69,19 @@ const currentUseDetail = {
     },
     {
       key: '2',
-      label: '辣~',
+      label: '酷~',
     },
     {
       key: '3',
-      label: '大长腿',
+      label: '🧑‍💻',
     },
     {
       key: '4',
-      label: '川妹子',
+      label: '苹果',
     },
     {
       key: '5',
-      label: '海纳百川',
+      label: '正能量',
     },
   ],
   notice: [
@@ -112,7 +111,7 @@ const currentUseDetail = {
       logo: avatars[2],
       description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
       updatedAt: new Date(),
-      member: '中二少女团',
+      member: '中二团',
       href: '',
       memberLink: '',
     },
@@ -156,7 +155,7 @@ const currentUseDetail = {
       key: '330000',
     },
     city: {
-      label: '杭州市',
+      label: '义乌市',
       key: '330100',
     },
   },

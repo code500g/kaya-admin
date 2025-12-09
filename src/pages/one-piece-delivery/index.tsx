@@ -1,20 +1,23 @@
-import { PageContainer } from '@ant-design/pro-components';
+import {
+  PageContainer,
+  type ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
 import {
   Button,
   Card,
+  ConfigProvider,
   Form,
   Input,
   Select,
   Space,
-  Table,
   Tabs,
   Tag,
 } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import React, { useMemo, useState } from 'react';
 import { mockData, type RowItem } from './_mock';
 
-const columns: ColumnsType<RowItem> = [
+const columns: ProColumns<RowItem>[] = [
   { title: '订单号', dataIndex: 'orderNo', width: 160, key: 'orderNo' },
   { title: '业务类型', dataIndex: 'businessType', key: 'businessType' },
   { title: '处理类型', dataIndex: 'handlingType', key: 'handlingType' },
@@ -22,14 +25,18 @@ const columns: ColumnsType<RowItem> = [
     title: '运输方式',
     dataIndex: 'transport',
     key: 'transport',
-    render: (text: RowItem['transport']) => <Tag>{text}</Tag>,
+    render: (text) => <Tag>{text as RowItem['transport']}</Tag>,
   },
   {
     title: '是否入库',
     dataIndex: 'isStored',
     key: 'isStored',
-    render: (text: boolean) =>
-      text ? <Tag color="green">是</Tag> : <Tag color="orange">否</Tag>,
+    render: (text) =>
+      (text as boolean) ? (
+        <Tag color="green">是</Tag>
+      ) : (
+        <Tag color="orange">否</Tag>
+      ),
     width: 100,
   },
   { title: '制单时间', dataIndex: 'createdAt', key: 'createdAt', width: 160 },
@@ -37,20 +44,20 @@ const columns: ColumnsType<RowItem> = [
     title: '收货状态',
     dataIndex: 'receiveStatus',
     key: 'receiveStatus',
-    render: (text: RowItem['receiveStatus']) => <Tag>{text}</Tag>,
+    render: (text) => <Tag>{text as RowItem['receiveStatus']}</Tag>,
   },
   { title: '目的仓库', dataIndex: 'destWarehouse', key: 'destWarehouse' },
   {
     title: '入库状态',
     dataIndex: 'storageStatus',
     key: 'storageStatus',
-    render: (text: RowItem['storageStatus']) => <Tag>{text}</Tag>,
+    render: (text) => <Tag>{text as RowItem['storageStatus']}</Tag>,
   },
   {
     title: '完结状态',
     dataIndex: 'finishedStatus',
     key: 'finishedStatus',
-    render: (text: RowItem['finishedStatus']) => <Tag>{text}</Tag>,
+    render: (text) => <Tag>{text as RowItem['finishedStatus']}</Tag>,
   },
   {
     title: '产品总数量',
@@ -136,56 +143,64 @@ const OnePieceDelivery: React.FC = () => {
   };
 
   return (
-    <PageContainer>
-      <Card>
-        <Tabs activeKey={activeTab} onChange={onTabChange}>
-          <Tabs.TabPane tab={`所有订单（${counts.total}）`} key="all" />
-          <Tabs.TabPane tab={`已入库（${counts.inCount}）`} key="in" />
-          <Tabs.TabPane tab={`未入库（${counts.outCount}）`} key="out" />
-          <Tabs.TabPane
-            tab={`回收站（${counts.recycleCount}）`}
-            key="recycle"
-          />
-        </Tabs>
+    <ConfigProvider componentSize="large">
+      <PageContainer
+        header={{
+          title: '',
+        }}
+      >
+        <Card>
+          <Tabs activeKey={activeTab} onChange={onTabChange}>
+            <Tabs.TabPane tab={`所有订单（${counts.total}）`} key="all" />
+            <Tabs.TabPane tab={`已入库（${counts.inCount}）`} key="in" />
+            <Tabs.TabPane tab={`未入库（${counts.outCount}）`} key="out" />
+            <Tabs.TabPane
+              tab={`回收站（${counts.recycleCount}）`}
+              key="recycle"
+            />
+          </Tabs>
 
-        <Card style={{ marginTop: 12 }}>
-          <Form form={form} layout="inline">
-            <Form.Item name="orderNo" label="订单号">
-              <Input placeholder="输入订单号" allowClear />
-            </Form.Item>
-            <Form.Item name="handlingType" label="处理类型">
-              <Select
-                style={{ width: 180 }}
-                placeholder="请选择处理类型"
-                allowClear
-              >
-                <Select.Option value="退换标">退换标</Select.Option>
-                <Select.Option value="仓储转运">仓储转运</Select.Option>
-                <Select.Option value="一件代发">一件代发</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item>
-              <Space>
-                <Button type="primary" onClick={onSearch}>
-                  查询
-                </Button>
-                <Button onClick={onReset}>重置</Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Card>
+          <Card style={{ marginTop: 12 }}>
+            <Form form={form} layout="inline">
+              <Form.Item name="orderNo" label="订单号">
+                <Input placeholder="输入订单号" allowClear />
+              </Form.Item>
+              <Form.Item name="handlingType" label="处理类型">
+                <Select
+                  style={{ width: 180 }}
+                  placeholder="请选择处理类型"
+                  allowClear
+                >
+                  <Select.Option value="退换标">退换标</Select.Option>
+                  <Select.Option value="仓储转运">仓储转运</Select.Option>
+                  <Select.Option value="一件代发">一件代发</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" onClick={onSearch}>
+                    查询
+                  </Button>
+                  <Button onClick={onReset}>重置</Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </Card>
 
-        <Card style={{ marginTop: 12 }}>
-          <Table<RowItem>
-            columns={columns}
-            dataSource={filteredData}
-            rowSelection={rowSelection}
-            pagination={{ pageSize: 10, showSizeChanger: false }}
-            rowKey="key"
-          />
+          <Card style={{ marginTop: 12 }}>
+            <ProTable<RowItem>
+              columns={columns}
+              dataSource={filteredData}
+              rowSelection={rowSelection}
+              pagination={{ pageSize: 10, showSizeChanger: false }}
+              rowKey="key"
+              search={false}
+              options={false}
+            />
+          </Card>
         </Card>
-      </Card>
-    </PageContainer>
+      </PageContainer>
+    </ConfigProvider>
   );
 };
 
