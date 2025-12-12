@@ -132,6 +132,9 @@ export default defineConfig({
             itemMarginInline: 4, //菜单项横向外间距
             itemBorderRadius: 8, // 菜单项圆角
           },
+          Segmented: {
+            itemSelectedColor: '#155DFB',
+          },
         },
       },
     },

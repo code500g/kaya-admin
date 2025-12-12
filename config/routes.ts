@@ -167,6 +167,23 @@ export default [
     icon: 'shop',
     component: './store-authorization',
   },
+  {
+    path: '/warehouse-orders-old',
+    name: '仓库发货订单[旧版]',
+    icon: 'container',
+    routes: [
+      {
+        path: '/warehouse-orders-old',
+        component: './warehouse-orders2',
+      },
+      {
+        path: '/warehouse-orders-old/new',
+        name: '新增仓储发货订单',
+        hideInMenu: true,
+        component: './warehouse-orders2/new',
+      },
+    ],
+  },
   // {
   //   path: "/form",
   //   icon: "form",

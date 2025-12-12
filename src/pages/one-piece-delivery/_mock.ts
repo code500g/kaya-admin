@@ -8,14 +8,14 @@ export interface RowItem {
   createdAt: string;
   receiveStatus: '未收货' | '部分收货' | '已收货';
   destWarehouse: string;
-  storageStatus: '未入库' | '部分入库' | '已入库';
+  storageStatus: number;
   finishedStatus: '未完结' | '已完结';
   productTotalQuantity: number;
   mark: string;
 }
 
 export const mockData: RowItem[] = [
-  // 2 已入库, 3 未入库, 0 回收站
+  // 1 已入库, 2 未入库, 3 回收站
   {
     key: '1',
     orderNo: 'OPD-001',
@@ -26,7 +26,7 @@ export const mockData: RowItem[] = [
     createdAt: '2025-01-02 10:00',
     receiveStatus: '已收货',
     destWarehouse: '仓库A',
-    storageStatus: '已入库',
+    storageStatus: 1,
     finishedStatus: '已完结',
     productTotalQuantity: 5,
     mark: 'MA-001',
@@ -41,7 +41,7 @@ export const mockData: RowItem[] = [
     createdAt: '2025-01-03 09:30',
     receiveStatus: '已收货',
     destWarehouse: '仓库B',
-    storageStatus: '已入库',
+    storageStatus: 1,
     finishedStatus: '已完结',
     productTotalQuantity: 2,
     mark: 'MA-002',
@@ -56,7 +56,7 @@ export const mockData: RowItem[] = [
     createdAt: '2025-01-04 11:20',
     receiveStatus: '未收货',
     destWarehouse: '仓库C',
-    storageStatus: '未入库',
+    storageStatus: 2,
     finishedStatus: '未完结',
     productTotalQuantity: 1,
     mark: 'MA-003',
@@ -71,7 +71,7 @@ export const mockData: RowItem[] = [
     createdAt: '2025-01-05 15:10',
     receiveStatus: '部分收货',
     destWarehouse: '仓库A',
-    storageStatus: '部分入库',
+    storageStatus: 2,
     finishedStatus: '未完结',
     productTotalQuantity: 3,
     mark: 'MA-004',
@@ -86,7 +86,22 @@ export const mockData: RowItem[] = [
     createdAt: '2025-01-06 08:45',
     receiveStatus: '未收货',
     destWarehouse: '仓库D',
-    storageStatus: '未入库',
+    storageStatus: 2,
+    finishedStatus: '未完结',
+    productTotalQuantity: 4,
+    mark: 'MA-005',
+  },
+  {
+    key: '6',
+    orderNo: 'OPD-006',
+    businessType: '仓储转运',
+    handlingType: '仓储转运',
+    transport: '快递',
+    isStored: false,
+    createdAt: '2025-01-06 08:45',
+    receiveStatus: '未收货',
+    destWarehouse: '仓库D',
+    storageStatus: 3,
     finishedStatus: '未完结',
     productTotalQuantity: 4,
     mark: 'MA-005',

@@ -3,6 +3,7 @@ import type {
   ActionType,
   ProColumns,
   ProDescriptionsItemProps,
+  ProFormInstance,
 } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -17,16 +18,11 @@ import { history } from '@umijs/max';
 import type { TabsProps } from 'antd';
 import {
   Button,
-  Card,
-  Checkbox,
+  Collapse,
   ConfigProvider,
-  DatePicker,
   Descriptions,
   Drawer,
-  Form,
-  Input,
   message,
-  Select,
   Space,
   Tabs,
   Tag,
@@ -34,9 +30,12 @@ import {
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import type { TableListItem, TableListParams } from './data';
+import type {
+  TableListItem,
+  TableListPagination,
+  TableListParams,
+} from './data';
 import { addRule, order, removeRule, updateRule } from './service';
-import './style.less';
 
 /**
  * 添加节点
@@ -108,7 +107,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const WarehouseOrder: React.FC = () => {
+const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
@@ -125,8 +124,7 @@ const WarehouseOrder: React.FC = () => {
     shipped: 0,
     unshipped: 0,
   });
-  const [filters, setFilters] = useState<Record<string, any>>({});
-  const [form] = Form.useForm();
+  const formRef = useRef<ProFormInstance | undefined>(undefined);
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -134,6 +132,7 @@ const WarehouseOrder: React.FC = () => {
       dataIndex: 'platformCode',
       width: 120,
       hideInTable: false,
+      valueType: 'select',
       valueEnum: {
         amazon: { text: '亚马逊' },
         ebay: { text: 'eBay' },
@@ -167,6 +166,7 @@ const WarehouseOrder: React.FC = () => {
       dataIndex: 'createdAt',
       valueType: 'dateTime',
       sorter: true,
+      search: true,
     },
     {
       title: '下单时间',
@@ -302,33 +302,9 @@ const WarehouseOrder: React.FC = () => {
   ];
 
   const tabItems: TabsProps['items'] = [
-    {
-      key: 'all',
-      label: (
-        <span>
-          所有订单
-          <span className="tab-count">（{tabCounts.all}）</span>
-        </span>
-      ),
-    },
-    {
-      key: 'shipped',
-      label: (
-        <span>
-          已出库
-          <span className="tab-count"> （{tabCounts.shipped}）</span>
-        </span>
-      ),
-    },
-    {
-      key: 'unshipped',
-      label: (
-        <span>
-          未出库
-          <span className="tab-count"> （{tabCounts.unshipped}）</span>
-        </span>
-      ),
-    },
+    { key: 'all', label: `所有订单（${tabCounts.all}）` },
+    { key: 'shipped', label: `已出库（${tabCounts.shipped}）` },
+    { key: 'unshipped', label: `未出库（${tabCounts.unshipped}）` },
   ];
 
   const channelList = [
@@ -348,302 +324,143 @@ const WarehouseOrder: React.FC = () => {
     ['SWIFT X', 'SWX开头'],
   ];
 
-  const { Search } = Input;
-
   return (
     <ConfigProvider componentSize="large">
       <PageContainer
         header={{
-          title: '',
+          title: '仓储发货订单',
         }}
       >
-        <Card style={{ marginBottom: '12px' }}>
-          <Tabs
-            activeKey={activeTab}
-            items={tabItems}
-            onChange={(key) => {
-              setActiveTab(key);
-              form.resetFields();
-              setFilters({});
-              actionRef.current?.reload();
-            }}
-          />
-
-          <Form
-            layout="inline"
-            form={form}
-            style={{
-              marginBottom: 12,
-              display: 'flex',
-              flexWrap: 'wrap',
-              rowGap: '8px',
-            }}
-          >
-            <Form.Item name="platformCode">
-              <Select
-                placeholder="销售平台"
-                allowClear
-                options={[
-                  { label: '不限', value: undefined },
-                  { label: 'Amazon', value: 'amazon' },
-                  { label: 'Ebay', value: 'ebay' },
-                  { label: 'TikTok', value: 'tiktok' },
-                  { label: 'SHEIN', value: 'shein' },
-                  { label: '沃尔玛', value: 'walmart' },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item name="orderIdentifier">
-              <Space.Compact>
-                <Select
-                  defaultValue="platformOrderNo"
-                  style={{ width: 150 }}
-                  options={[
-                    { label: '销售平台单号', value: 'platformOrderNo' },
-                    { label: '订单编号', value: 'orderNo' },
-                    { label: '唛头/SO', value: 'so' },
-                  ]}
-                />
-                <Search placeholder="" allowClear />
-              </Space.Compact>
-            </Form.Item>
-
-            <Form.Item name="skuid">
-              <Space.Compact>
-                <Select
-                  defaultValue="sku"
-                  style={{ width: 100 }}
-                  options={[
-                    { label: 'SKU', value: 'sku' },
-                    { label: 'FBA ID', value: 'fbaid' },
-                  ]}
-                />
-                <Search placeholder="" allowClear />
-              </Space.Compact>
-            </Form.Item>
-
-            <Form.Item name="trackingNo">
-              <Space.Compact>
-                <Search placeholder="快递单号" allowClear />
-              </Space.Compact>
-            </Form.Item>
-            <Form.Item name="orderDateRange">
-              <DatePicker.RangePicker style={{ width: '100%' }} />
-            </Form.Item>
-
-            <Form.Item name="orderStatus">
-              <Select
-                placeholder="订单状态"
-                allowClear
-                options={[
-                  { label: '不限', value: undefined },
-                  { label: '草稿', value: 'shipped' },
-                  { label: '已提交', value: 'pending' },
-                  { label: '仓库已发货', value: 'delivered' },
-                  { label: '快递已提取', value: 'picked' },
-                  { label: '已签收', value: 'exception' },
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item name="shippingMethod">
-              <Select
-                placeholder="运输方式"
-                allowClear
-                options={[
-                  { label: '不限', value: undefined },
-                  { label: '空运', value: 'air' },
-                  { label: '海运', value: 'sea' },
-                  { label: '快递', value: 'express' },
-                  { label: '卡车', value: 'truck' },
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item name="shippingStatus">
-              <Select
-                placeholder="运输状态"
-                allowClear
-                options={[
-                  { label: '不限', value: undefined },
-                  { label: '待发货', value: 'preparing' },
-                  { label: '运输中', value: 'intransit' },
-                  { label: '已送达', value: 'delivered' },
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item name="interceptStatus">
-              <Select
-                placeholder="拦截状态"
-                allowClear
-                options={[
-                  { label: '不限', value: undefined },
-                  { label: '正常', value: 'none' },
-                  { label: '已拦截', value: 'blocked' },
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item name="multiOrder" valuePropName="checked">
-              <Checkbox>多单号</Checkbox>
-            </Form.Item>
-
-            <Form.Item>
-              <Space>
-                <Button
-                  onClick={() => {
-                    form.resetFields();
-                    setFilters({});
-                    actionRef.current?.reload();
-                  }}
-                >
-                  重置
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Card>
-        <Card>
-          {/* <Collapse
-            bordered={false}
-            defaultActiveKey={["channel"]}
-            style={{ backgroundColor: "#FFFFFF" }}
-          >
-            <Collapse.Panel header="渠道单号说明" key="channel">
-              <Descriptions column={7} size="small" bordered title="渠道单号说明">
-                {channelList.map(([label, desc]) => (
-                  <Descriptions.Item key={label} label={label}>
-                    {desc}
-                  </Descriptions.Item>
-                ))}
-              </Descriptions>
-            </Collapse.Panel>
-          </Collapse> */}
-          <Descriptions column={7} size="small" bordered>
-            {channelList.map(([label, desc]) => (
-              <Descriptions.Item key={label} label={label}>
-                {desc}
-              </Descriptions.Item>
-            ))}
-          </Descriptions>
-          <ProTable<TableListItem, TableListParams>
-            actionRef={actionRef}
-            rowKey="key"
-            search={false}
-            className="protable-toolbar-justify"
-            toolBarRender={() => [
-              <Space key="actions">
-                <Button
-                  type="primary"
-                  onClick={() => history.push('/warehouse-orders/new')}
-                >
-                  新建
-                </Button>
-                <Button>合并订单</Button>
-                <Button>批量备注</Button>
-                <Button>批量提交</Button>
-                <Button>下载面单</Button>
-                <Button>导入</Button>
-                <Button>导出</Button>
-                <Button>批量导入面单</Button>
-                <Button>签收统计导出</Button>
-              </Space>,
-            ]}
-            // tableExtraRender={() => (
-            //   <Collapse
-            //     bordered={false}
-            //     defaultActiveKey={["channel"]}
-            //     style={{ marginBottom: 16, backgroundColor: "#FFFFFF" }}
-            //   >
-            //     <Collapse.Panel header="渠道单号说明" key="channel">
-            //       <Descriptions column={7} size="small" bordered>
-            //         {channelList.map(([label, desc]) => (
-            //           <Descriptions.Item key={label} label={label}>
-            //             {desc}
-            //           </Descriptions.Item>
-            //         ))}
-            //       </Descriptions>
-            //     </Collapse.Panel>
-            //   </Collapse>
-            // )}
-            request={async (params, sorter, filter) => {
-              const result = await order({
-                ...(params as any),
-                ...sorter,
-                ...filter,
-                ...filters,
-                outboundStatus:
-                  activeTab === 'shipped'
-                    ? 1
-                    : activeTab === 'unshipped'
-                      ? 0
-                      : undefined,
-              });
-
-              const extra = (result as any)?.extra || {};
-              setTabCounts((prev) => ({
-                all: extra.totalAll ?? result.total ?? prev.all,
-                shipped: extra.totalShipped ?? prev.shipped,
-                unshipped: extra.totalUnshipped ?? prev.unshipped,
-              }));
-
-              return result;
-            }}
-            params={{
-              ...filters,
+        <Tabs
+          activeKey={activeTab}
+          items={tabItems}
+          onChange={(key) => {
+            setActiveTab(key);
+            formRef.current?.resetFields();
+            actionRef.current?.reload();
+          }}
+          style={{}}
+        />
+        <ProTable<TableListItem, TableListParams>
+          headerTitle="仓储发货订单"
+          actionRef={actionRef}
+          rowKey="key"
+          // 搜索表单配置
+          search={{
+            labelWidth: 'auto',
+            defaultCollapsed: false, // 默认展开所有搜索项
+            collapsed: false,
+            collapseRender: false,
+            span: 4, // 每个表单项占用的栅格数（24栅格系统）
+            className: 'custom-search-form',
+          }}
+          form={{
+            layout: 'horizontal',
+            // 配置表单 label 和 wrapper 的栅格比例
+            labelCol: { span: 7 },
+            wrapperCol: { span: 17 },
+          }}
+          formRef={formRef}
+          toolBarRender={() => [
+            <Space key="actions">
+              <Button
+                type="primary"
+                onClick={() => history.push('/warehouse-orders/new')}
+              >
+                <PlusOutlined /> 新增订单
+              </Button>
+              <Button>合并订单</Button>
+              <Button>批量备注</Button>
+              <Button>批量提交</Button>
+              <Button>下载面单</Button>
+              <Button>导入</Button>
+              <Button>导出</Button>
+              <Button>批量导入面单</Button>
+              <Button>签收统计导出</Button>
+            </Space>,
+          ]}
+          tableExtraRender={() => (
+            <Collapse
+              bordered={false}
+              defaultActiveKey={['channel']}
+              style={{ marginBottom: 16, backgroundColor: '#FFFFFF' }}
+            >
+              <Collapse.Panel header="渠道单号说明" key="channel">
+                <Descriptions column={7} size="small" bordered>
+                  {channelList.map(([label, desc]) => (
+                    <Descriptions.Item key={label} label={label}>
+                      {desc}
+                    </Descriptions.Item>
+                  ))}
+                </Descriptions>
+              </Collapse.Panel>
+            </Collapse>
+          )}
+          request={async (params, sorter, filter) => {
+            const result = await order({
+              ...(params as any),
+              ...sorter,
+              ...filter,
               outboundStatus:
                 activeTab === 'shipped'
                   ? 1
                   : activeTab === 'unshipped'
                     ? 0
                     : undefined,
-            }}
-            columns={columns}
-            rowSelection={{
-              onChange: (_, selectedRows) => {
-                setSelectedRows(selectedRows);
-              },
-            }}
-          />
-          {selectedRowsState?.length > 0 && (
-            <FooterToolbar
-              extra={
-                <div>
-                  已选择{' '}
-                  <a
-                    style={{
-                      fontWeight: 600,
-                    }}
-                  >
-                    {selectedRowsState.length}
-                  </a>{' '}
-                  项 &nbsp;&nbsp;
-                  <span>
-                    服务调用次数总计{' '}
-                    {selectedRowsState.reduce(
-                      (pre, item) => pre + (item.callNo ?? 0),
-                      0,
-                    )}{' '}
-                    万
-                  </span>
-                </div>
-              }
-            >
-              <Button
-                onClick={async () => {
-                  await handleRemove(selectedRowsState);
-                  setSelectedRows([]);
-                  actionRef.current?.reloadAndRest?.();
-                }}
-              >
-                批量删除
-              </Button>
-              <Button type="primary">批量审批</Button>
-            </FooterToolbar>
-          )}
-        </Card>
+            });
 
+            const extra = (result as any)?.extra || {};
+            setTabCounts((prev) => ({
+              all: extra.totalAll ?? result.total ?? prev.all,
+              shipped: extra.totalShipped ?? prev.shipped,
+              unshipped: extra.totalUnshipped ?? prev.unshipped,
+            }));
+
+            return result;
+          }}
+          columns={columns}
+          rowSelection={{
+            onChange: (_, selectedRows) => {
+              setSelectedRows(selectedRows);
+            },
+          }}
+        />
+        {selectedRowsState?.length > 0 && (
+          <FooterToolbar
+            extra={
+              <div>
+                已选择{' '}
+                <a
+                  style={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {selectedRowsState.length}
+                </a>{' '}
+                项 &nbsp;&nbsp;
+                <span>
+                  服务调用次数总计{' '}
+                  {selectedRowsState.reduce(
+                    (pre, item) => pre + (item.callNo ?? 0),
+                    0,
+                  )}{' '}
+                  万
+                </span>
+              </div>
+            }
+          >
+            <Button
+              onClick={async () => {
+                await handleRemove(selectedRowsState);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            >
+              批量删除
+            </Button>
+            <Button type="primary">批量审批</Button>
+          </FooterToolbar>
+        )}
         <ModalForm
           title="新建规则"
           width="400px"
@@ -764,4 +581,4 @@ const getOrderStatusConfig = (status: React.ReactNode): OrderStatusConfig => {
   return configMap[key] || configMap.default;
 };
 
-export default WarehouseOrder;
+export default TableList;
